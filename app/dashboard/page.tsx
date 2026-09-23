@@ -186,15 +186,7 @@ export default async function DashboardPage() {
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-fuchsia-300">Performance progress</p>
           <h2 className="mt-3 text-2xl font-black">Interview score trend</h2>
           {progressScores.length > 0 ? (
-            <div className="mt-7 flex h-40 items-end gap-3 border-b border-slate-700 pb-2">
-              {progressScores.map((score, index) => (
-                <div key={`${score}-${index}`} className="flex flex-1 flex-col items-center gap-2">
-                  <span className="text-xs font-semibold text-cyan-200">{score}%</span>
-                  <div className="w-full rounded-t-lg bg-cyan-400/80 transition-all" style={{ height: `${Math.max(score, 4)}%` }} />
-                  <span className="text-xs text-slate-500">#{index + 1}</span>
-                </div>
-              ))}
-            </div>
+            <ScoreTrendGraph scores={progressScores} />
           ) : (
             <p className="mt-4 text-slate-400">Complete mock interviews to see your score trend here.</p>
           )}
@@ -317,5 +309,51 @@ export default async function DashboardPage() {
         )}
       </div>
     </main>
+  );
+}
+
+function ScoreTrendGraph({ scores }: { scores: number[] }) {
+  const width = 720;
+  const height = 250;
+  const padding = { top: 24, right: 30, bottom: 42, left: 46 };
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+  const pointX = (index: number) =>
+    scores.length === 1
+      ? padding.left + chartWidth / 2
+      : padding.left + (index / (scores.length - 1)) * chartWidth;
+  const pointY = (score: number) =>
+    padding.top + ((100 - score) / 100) * chartHeight;
+  const points = scores.map((score, index) => ({ score, x: pointX(index), y: pointY(score) }));
+  const linePoints = points.map((point) => `${point.x},${point.y}`).join(" ");
+  const areaPoints = `${padding.left},${padding.top + chartHeight} ${linePoints} ${points[points.length - 1].x},${padding.top + chartHeight}`;
+
+  return (
+    <div className="mt-7 overflow-x-auto rounded-2xl border border-slate-700 bg-slate-950 p-4">
+      <svg viewBox={`0 0 ${width} ${height}`} className="min-w-[620px] w-full" role="img" aria-label="Interview score trend graph">
+        <defs>
+          <linearGradient id="scoreArea" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[0, 25, 50, 75, 100].map((score) => {
+          const y = pointY(score);
+          return <g key={score}>
+            <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#334155" strokeDasharray="5 5" />
+            <text x={padding.left - 10} y={y + 4} textAnchor="end" fill="#94a3b8" fontSize="12">{score}</text>
+          </g>;
+        })}
+        <polygon points={areaPoints} fill="url(#scoreArea)" />
+        {points.length > 1 && <polyline points={linePoints} fill="none" stroke="#22d3ee" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />}
+        {points.map((point, index) => (
+          <g key={`${point.score}-${index}`}>
+            <circle cx={point.x} cy={point.y} r="7" fill="#020817" stroke="#67e8f9" strokeWidth="4" />
+            <text x={point.x} y={point.y - 14} textAnchor="middle" fill="#67e8f9" fontSize="13" fontWeight="700">{point.score}%</text>
+            <text x={point.x} y={height - 14} textAnchor="middle" fill="#94a3b8" fontSize="12">Attempt {index + 1}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
   );
 }

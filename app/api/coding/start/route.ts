@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const recentSubmissions = await prisma.codingSubmission.findMany({
+    const previousChallenges = await prisma.generatedCodingChallenge.findMany({
       where: {
         userId: user.userId,
       },
@@ -56,11 +56,22 @@ export async function POST(request: NextRequest) {
       orderBy: {
         createdAt: "desc",
       },
-      take: 15,
+      take: 100,
     });
 
-    const oldProblemNames = recentSubmissions
-      .map((submission) => submission.problemName)
+    const previousSubmissions = await prisma.codingSubmission.findMany({
+      where: { userId: user.userId },
+      select: { problemName: true },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    });
+
+    const allPreviousProblemNames = [
+      ...previousChallenges.map((challenge) => challenge.problemName),
+      ...previousSubmissions.map((submission) => submission.problemName),
+    ];
+
+    const oldProblemNames = allPreviousProblemNames
       .join("\n- ");
 
     const prompt = `
@@ -128,6 +139,25 @@ Rules:
     ) {
       throw new Error("Gemini returned an invalid coding problem.");
     }
+
+    const normalizedTitle = problem.title.toLowerCase().replace(/\s+/g, " ").trim();
+    const hasRepeatedTitle = allPreviousProblemNames.some(
+      (problemName) =>
+        problemName.toLowerCase().replace(/\s+/g, " ").trim() === normalizedTitle
+    );
+
+    if (hasRepeatedTitle) {
+      throw new Error("Could not create a new coding problem. Please try again.");
+    }
+
+    await prisma.generatedCodingChallenge.create({
+      data: {
+        userId: user.userId,
+        problemName: problem.title.trim().slice(0, 150),
+        track,
+        difficulty,
+      },
+    });
 
     return NextResponse.json({
       track,

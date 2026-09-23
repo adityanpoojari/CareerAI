@@ -17,6 +17,8 @@ model User {
   resumes           Resume[]
   interviews        Interview[]
   codingSubmissions CodingSubmission[]
+  generatedInterviewQuestions GeneratedInterviewQuestion[]
+  generatedCodingChallenges   GeneratedCodingChallenge[]
 }
 
 model Resume {
@@ -80,6 +82,30 @@ model CodingSubmission {
   status      String
   score       Int?
   feedback    String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model GeneratedInterviewQuestion {
+  id           String   @id @default(cuid())
+  userId       String
+  questionText String
+  category     String
+  targetRole   String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model GeneratedCodingChallenge {
+  id          String   @id @default(cuid())
+  userId      String
+  problemName String
+  track       String
+  difficulty  String
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 

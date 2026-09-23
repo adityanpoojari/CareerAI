@@ -48,11 +48,9 @@ export async function POST(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    const previousAnswers = await prisma.interviewAnswer.findMany({
+    const previousQuestions = await prisma.generatedInterviewQuestion.findMany({
       where: {
-        interview: {
-          userId: user.userId,
-        },
+        userId: user.userId,
       },
       select: {
         questionText: true,
@@ -60,13 +58,24 @@ export async function POST(request: NextRequest) {
       orderBy: {
         createdAt: "desc",
       },
-      take: 20,
+      take: 100,
+    });
+
+    const previouslyAnsweredQuestions = await prisma.interviewAnswer.findMany({
+      where: { interview: { userId: user.userId } },
+      select: { questionText: true },
+      orderBy: { createdAt: "desc" },
+      take: 100,
     });
 
     const targetRole = latestResume?.targetRole || "General Graduate Role";
 
-    const previousQuestions = previousAnswers
-      .map((answer) => answer.questionText)
+    const allPreviousQuestionTexts = [
+      ...previousQuestions.map((question) => question.questionText),
+      ...previouslyAnsweredQuestions.map((question) => question.questionText),
+    ];
+
+    const previousQuestionText = allPreviousQuestionTexts
       .join("\n- ");
 
     const resumeText = latestResume?.extractedText
@@ -85,7 +94,7 @@ Resume text:
 ${resumeText}
 
 Previously asked questions to avoid repeating:
-- ${previousQuestions || "No previous questions"}
+- ${previousQuestionText || "No previous questions"}
 
 Rules:
 - Do not repeat or closely reword previous questions.
@@ -131,11 +140,27 @@ Rules:
       throw new Error("Gemini did not return interview questions.");
     }
 
-    const questions = result.questions
+    const questions: string[] = result.questions
       .filter((question: unknown) => typeof question === "string")
       .map((question: string) => question.trim())
       .filter(Boolean)
       .slice(0, 5);
+
+    const normalizedPreviousQuestions = new Set(
+      allPreviousQuestionTexts.map((question) =>
+        question.toLowerCase().replace(/\s+/g, " ").trim()
+      )
+    );
+
+    const hasRepeatedQuestion = questions.some((question) =>
+      normalizedPreviousQuestions.has(
+        question.toLowerCase().replace(/\s+/g, " ").trim()
+      )
+    );
+
+    if (questions.length !== 5 || hasRepeatedQuestion) {
+      throw new Error("Could not create five new interview questions. Please try again.");
+    }
 
     const interview = await prisma.interview.create({
       data: {
@@ -150,6 +175,15 @@ Rules:
         category: interviewType,
         targetRole,
         difficulty: "Medium",
+        questionText: question,
+      })),
+    });
+
+    await prisma.generatedInterviewQuestion.createMany({
+      data: questions.map((question: string) => ({
+        userId: user.userId,
+        category: interviewType,
+        targetRole,
         questionText: question,
       })),
     });
