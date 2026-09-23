@@ -52,8 +52,8 @@ export default function CareerReadinessCard() {
     <div className="relative">
       <div className="absolute -inset-4 rounded-3xl bg-cyan-400/20 blur-3xl" />
 
-      <div className="relative rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-        <div className="mb-6 flex items-center justify-between">
+      <div className="relative rounded-3xl border border-slate-700 bg-slate-900 p-5 shadow-2xl sm:p-6">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm text-slate-400">
               Career readiness score
@@ -65,7 +65,7 @@ export default function CareerReadinessCard() {
             </p>
           </div>
 
-          <div className="rounded-full bg-emerald-400/15 px-3 py-1 text-sm font-medium text-emerald-300">
+          <div className="w-fit rounded-full bg-emerald-400/15 px-3 py-1 text-sm font-medium text-emerald-300">
             {isLoggedIn ? "Your live score" : "CareerAI preview"}
           </div>
         </div>

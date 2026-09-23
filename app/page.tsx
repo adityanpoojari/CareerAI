@@ -140,13 +140,13 @@ export default function Home() {
     <main className="relative isolate min-h-screen overflow-hidden bg-slate-950 text-white">
       <GlowingParticles />
 
-      <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-        <a href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400 text-xl font-bold text-slate-950">
+      <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 sm:py-5">
+        <a href="/" className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-400 text-lg font-bold text-slate-950 sm:h-10 sm:w-10 sm:text-xl">
             C
           </div>
 
-          <span className="text-2xl font-bold tracking-tight">
+          <span className="text-xl font-bold tracking-tight sm:text-2xl">
             Career<span className="text-cyan-400">AI</span>
           </span>
         </a>
@@ -169,7 +169,7 @@ export default function Home() {
           )}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           {isSessionLoading ? (
             <div className="h-9 w-24 animate-pulse rounded-lg bg-slate-800" />
           ) : currentUser ? (
@@ -183,7 +183,7 @@ export default function Home() {
 
               <button
                 onClick={handleLogout}
-                className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-red-400 hover:text-red-300"
+                className="rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 hover:border-red-400 hover:text-red-300 sm:px-4 sm:text-sm"
               >
                 Log out
               </button>
@@ -192,14 +192,14 @@ export default function Home() {
             <>
               <button
                 onClick={() => openAuthPopup("login")}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-slate-200 hover:text-cyan-400"
+                className="rounded-lg px-2 py-2 text-xs font-medium text-slate-200 hover:text-cyan-400 sm:px-4 sm:text-sm"
               >
                 Log in
               </button>
 
               <button
                 onClick={() => openAuthPopup("signup")}
-                className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-300"
+                className="rounded-lg bg-cyan-400 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-300 sm:px-4 sm:text-sm"
               >
                 Get started
               </button>
@@ -208,28 +208,28 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="relative z-10 mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
+      <section className="relative z-10 mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 sm:py-20 lg:grid-cols-2 lg:items-center lg:py-28">
         <div>
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-300">
             ✨ Your AI-powered career coach
           </div>
 
-          <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
+          <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl">
             Prepare smarter.
             <br />
             Get hired <span className="text-cyan-400">faster.</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
+          <p className="mt-5 max-w-xl text-base leading-7 text-slate-300 sm:mt-6 sm:text-lg sm:leading-8">
             Analyze your resume, practice realistic interviews, improve your
             answers, and track your progress—all in one intelligent career
             platform.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
             <a
               href="/resume"
-              className="rounded-xl bg-cyan-400 px-6 py-3 font-bold text-slate-950 transition hover:scale-105 hover:bg-cyan-300"
+              className="rounded-xl bg-cyan-400 px-6 py-3 text-center font-bold text-slate-950 transition hover:bg-cyan-300 sm:hover:scale-105"
             >
               Upload Resume Free →
             </a>
@@ -237,14 +237,14 @@ export default function Home() {
             {currentUser ? (
               <a
                 href="/interview"
-                className="rounded-xl border border-slate-600 px-6 py-3 font-semibold text-slate-200 hover:border-cyan-400 hover:text-cyan-300"
+                className="rounded-xl border border-slate-600 px-6 py-3 text-center font-semibold text-slate-200 hover:border-cyan-400 hover:text-cyan-300"
               >
                 Start Mock Interview
               </a>
             ) : (
               <a
                 href="#features"
-                className="rounded-xl border border-slate-600 px-6 py-3 font-semibold text-slate-200 hover:border-cyan-400 hover:text-cyan-300"
+                className="rounded-xl border border-slate-600 px-6 py-3 text-center font-semibold text-slate-200 hover:border-cyan-400 hover:text-cyan-300"
               >
                 Explore features
               </a>
@@ -263,14 +263,14 @@ export default function Home() {
 
       <section
         id="features"
-        className="relative z-10 bg-slate-900/60 px-6 py-20"
+        className="relative z-10 bg-slate-900/60 px-4 py-14 sm:px-6 sm:py-20"
       >
         <div className="mx-auto max-w-7xl">
           <p className="text-center text-sm font-semibold uppercase tracking-widest text-cyan-400">
             Everything you need
           </p>
 
-          <h2 className="mt-3 text-center text-3xl font-bold md:text-4xl">
+          <h2 className="mt-3 text-center text-2xl font-bold sm:text-3xl md:text-4xl">
             Your complete interview-preparation workspace
           </h2>
 
@@ -299,8 +299,8 @@ export default function Home() {
       </footer>
 
       {showAuthPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-6 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm sm:px-6">
+          <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-5 shadow-2xl sm:p-8">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-widest text-cyan-400">

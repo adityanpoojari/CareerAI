@@ -101,7 +101,7 @@ export default async function DashboardPage() {
     : null;
 
   return (
-    <main className="min-h-screen bg-[#020817] px-5 py-10 text-white sm:px-8 lg:px-14">
+    <main className="min-h-screen bg-[#020817] px-4 py-7 text-white sm:px-8 sm:py-10 lg:px-14">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
           <div>
@@ -109,7 +109,7 @@ export default async function DashboardPage() {
               Your workspace
             </p>
             <h1 className="text-3xl font-black sm:text-4xl">
-              Welcome back, {session.name || "Career Builder"}!
+              <span className="break-words">Welcome back, {session.name || "Career Builder"}!</span>
             </h1>
             <p className="mt-2 text-slate-400">
               Track your progress and continue preparing for your target role.
@@ -200,7 +200,7 @@ export default async function DashboardPage() {
 
             <div className="mt-5 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
               <div>
-                <h2 className="text-2xl font-black">{latestResume.fileName}</h2>
+                <h2 className="break-words text-2xl font-black">{latestResume.fileName}</h2>
                 <p className="mt-2 text-slate-300">
                   Target role: {latestResume.targetRole}
                 </p>
