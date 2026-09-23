@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                String              @id @default(cuid())
+  name              String?
+  email             String              @unique
+  passwordHash      String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  resumes           Resume[]
+  interviews        Interview[]
+  codingSubmissions CodingSubmission[]
+}
+
+model Resume {
+  id            String   @id @default(cuid())
+  userId        String?
+  fileName      String
+  fileType      String
+  targetRole    String
+  extractedText String
+  reportJson    String
+  overallScore  Int?
+  createdAt     DateTime @default(now())
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
+
+model Question {
+  id             String   @id @default(cuid())
+  category       String
+  targetRole     String?
+  difficulty     String   @default("Medium")
+  questionText   String
+  expectedAnswer String?
+  createdAt      DateTime @default(now())
+}
+
+model Interview {
+  id          String            @id @default(cuid())
+  userId      String
+  targetRole  String
+  interviewType String
+  overallScore Int?
+  startedAt   DateTime          @default(now())
+  completedAt DateTime?
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers     InterviewAnswer[]
+
+  @@index([userId])
+}
+
+model InterviewAnswer {
+  id            String    @id @default(cuid())
+  interviewId   String
+  questionText  String
+  userAnswer    String
+  score         Int?
+  feedback      String?
+  createdAt     DateTime  @default(now())
+  interview     Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+
+  @@index([interviewId])
+}
+
+model CodingSubmission {
+  id          String   @id @default(cuid())
+  userId      String
+  language    String
+  problemName String
+  code        String
+  status      String
+  score       Int?
+  feedback    String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
